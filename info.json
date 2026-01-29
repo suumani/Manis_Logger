@@ -1,0 +1,11 @@
+{
+  "name": "Manis_Logger",
+  "version": "0.0.1",
+  "title": "Manis Logger",
+  "author": "suumani",
+  "factorio_version": "2.0",
+  "description": "Unified logging helper for Manis mods (runtime). Provides level control and sinks via remote interface.",
+  "dependencies": [
+    "base >= 2.0.0"
+  ]
+}
