@@ -1,3 +1,10 @@
+-- __Manis_Logger__/scripts/services/Log.lua
+-- ------------------------------------------------------------
+-- Responsibility:
+--   Logging service with per-source level/sinks control.
+--   MUST NOT crash even if caller passes non-string values.
+-- ------------------------------------------------------------
+
 local M = {}
 local Settings = require("scripts/services/LogSettings")
 local Notice = require("scripts/services/Notice")
@@ -7,13 +14,19 @@ local LEVEL_VALUE = { debug=10, info=20, warn=30, error=40, off=9999 }
 local function to_string(v)
   if v == nil then return "nil" end
   if type(v) == "string" then return v end
-  return serpent.line(v, { comment = false })
+
+  -- serpent may or may not be available depending on environment/load order.
+  if serpent and serpent.line then
+    return serpent.line(v, { comment = false })
+  end
+
+  return tostring(v)
 end
 
 local function prefix(tag, player_index)
   local t = (game and game.tick) or -1
   local p = player_index and (" p" .. player_index) or ""
-  return "[" .. (tag or "Mod") .. "][" .. t .. p .. "]"
+  return "[" .. to_string(tag or "Mod") .. "][" .. t .. p .. "]"
 end
 
 local function should_emit(level_name, source_key)
