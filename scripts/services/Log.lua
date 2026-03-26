@@ -15,7 +15,6 @@ local function to_string(v)
   if v == nil then return "nil" end
   if type(v) == "string" then return v end
 
-  -- serpent may or may not be available depending on environment/load order.
   if serpent and serpent.line then
     return serpent.line(v, { comment = false })
   end
@@ -45,12 +44,8 @@ local function write_sinks(sinks, line)
 end
 
 local function emit(level_name, tag, msg, player_index, source_key)
-  -- 1) optional: warn once if per-source keys are missing (but source_key is provided)
-  Notice.notify_source_settings_missing(source_key)
-
   local ok, effective_min = should_emit(level_name, source_key)
 
-  -- 2) if DEBUG was suppressed, notify once (do not spam)
   if (not ok) and level_name == "debug" then
     Notice.notify_debug_suppressed(source_key, effective_min)
     return
